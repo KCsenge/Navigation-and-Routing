@@ -36,8 +36,11 @@ sap.ui.define([
 		_onRouteMatched: function (oEvent) {
 			this._oRouterArgs = oEvent.getParameter("arguments");
 			this._oRouterArgs["?query"] = this._oRouterArgs["?query"] || {};
+			var oQueryParameter = this._oRouterArgs["?query"];
 
-			this._applySearchFilter(this._oRouterArgs["?query"].search);
+			this._applySearchFilter(oQueryParameter.search);
+
+			this._applySorter(oQueryParameter.sortField, oQueryParameter.sortDescending);
 		},
 
 		onSortButtonPressed : function () {
@@ -52,18 +55,20 @@ sap.ui.define([
 		},
 
 		_initViewSettingsDialog : function () {
+			var oRouter = this.getRouter();
 			this._oVSD = new ViewSettingsDialog("vsd", {
 				confirm: function (oEvent) {
 					var oSortItem = oEvent.getParameter("sortItem");
-					this._applySorter(oSortItem.getKey(), oEvent.getParameter("sortDescending"));
+					this._oRouterArgs["?query"].sortField = oSortItem.getKey();
+					this._oRouterArgs["?query"].sortDescending = oEvent.getParameter("sortDescending");
+					oRouter.navTo("employeeOverview", this._oRouterArgs, true );
 				}.bind(this)
 			});
 
-			// init sorting (with simple sorters as custom data for all fi_initViewSettingsDialogelds)
 			this._oVSD.addSortItem(new ViewSettingsItem({
 				key: "EmployeeID",
 				text: "Employee ID",
-				selected: true			// by default the MockData is sorted by EmployeeID
+				selected: true
 			}));
 
 			this._oVSD.addSortItem(new ViewSettingsItem({
