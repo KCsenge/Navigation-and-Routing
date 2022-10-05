@@ -41,10 +41,16 @@ sap.ui.define([
 			this._applySearchFilter(oQueryParameter.search);
 
 			this._applySorter(oQueryParameter.sortField, oQueryParameter.sortDescending);
+
+			if (oQueryParameter.showDialog) {
+				this._oVSD.open();
+			}
 		},
 
 		onSortButtonPressed : function () {
-			this._oVSD.open();
+			var oRouter = this.getRouter();
+			this._oRouterArgs["?query"].showDialog = 1;
+			oRouter.navTo("employeeOverview", this._oRouterArgs);
 		},
 
 		onSearchEmployeesTable : function (oEvent) {
@@ -62,6 +68,10 @@ sap.ui.define([
 					this._oRouterArgs["?query"].sortField = oSortItem.getKey();
 					this._oRouterArgs["?query"].sortDescending = oEvent.getParameter("sortDescending");
 					oRouter.navTo("employeeOverview", this._oRouterArgs, true );
+				}.bind(this),
+				cancel: function (oEvent){
+					delete this._oRouterArgs["?query"].showDialog;
+					oRouter.navTo("employeeOverview", this._oRouterArgs, true);
 				}.bind(this)
 			});
 
