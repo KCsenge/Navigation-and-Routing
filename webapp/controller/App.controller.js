@@ -15,6 +15,10 @@ sap.ui.define([
 				var sHash = oEvent.getParameter("hash");
 				Log.info("Sorry, but the hash '" + sHash + "' is invalid.", "The resource was not found.");
 			});
+			oRouter.attachRouteMatched(function (oEvent){
+				var sRouteName = oEvent.getParameter("name");
+				Log.info("User accessed route " + sRouteName + ", timestamp = " + new Date().getTime());
+			});
 		}
 
 	});
